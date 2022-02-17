@@ -1,7 +1,21 @@
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using TodoASPNET.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    var connectionStringBuilder = new SqlConnectionStringBuilder(
+        builder.Configuration.GetConnectionString("TodoContext")
+        );
+    connectionStringBuilder.Password = builder.Configuration["DbPassword"];
+    var connection = connectionStringBuilder.ConnectionString;
+    options.UseSqlServer(connection);
+});
+
 
 var app = builder.Build();
 
